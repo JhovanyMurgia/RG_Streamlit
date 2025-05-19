@@ -1,0 +1,8 @@
+[server]
+headless = true
+port = 8501
+enableCORS = false
+runOnSave = false
+
+[theme]
+base = "light"
