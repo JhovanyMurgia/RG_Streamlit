@@ -5,6 +5,8 @@ import numpy as np
 import cv2
 from PIL import Image
 import fitz  # PyMuPDF
+import torch
+torch.classes.__path__ = []
 
 from identificar_fv import dividir_rg, detect_rg, etapa_final
 from modelo_cadunico import load_ocr_model, process_document
