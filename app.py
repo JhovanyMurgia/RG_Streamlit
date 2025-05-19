@@ -33,7 +33,7 @@ def desenhar_bounding_boxes(uploaded_file, result):
 
                     cv2.rectangle(annotated_image, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
                     cv2.putText(annotated_image, confidence_text, (x_min, y_min - 2),
-                                cv2.FONT_HERSHEY_SIMPLEX, 2.0, (255, 0, 0), 2)
+                                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
 
     annotated_image = cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB)
     return annotated_image
