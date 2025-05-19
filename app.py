@@ -63,7 +63,7 @@ def main():
 
     # Carregar e exibir a imagem como cabeçalho
     header_image = Image.open("./img/header_sedu.jpeg")
-    st.image(header_image, use_column_width=True)
+    st.image(img, use_container_width=True)
 
 
     st.write("Demonstração dos modelos para o Projeto 11 SEDU")
