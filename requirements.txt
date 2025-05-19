@@ -1,23 +1,10 @@
-# Streamlit e bibliotecas principais
 streamlit
 pandas
 numpy
 Pillow
-
-# OpenCV (com suporte a Python wheels)
 opencv-python-headless
-
-# Manipulação de PDFs
 PyMuPDF
-
-# OCR e modelo Doctr
 python-doctr[torch]
-
-# Similaridade de strings
 rapidfuzz
-
-# YOLO da Ultralytics
 ultralytics
-
-# Dependências adicionais recomendadas
 scikit-image
