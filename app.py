@@ -87,7 +87,7 @@ def main():
         imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
 
         for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_column_width=True)
+            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
 
         # Salvar PDF temporariamente para uso posterior
         temp_pdf_path = "temp_upload.pdf"
@@ -124,18 +124,18 @@ def main():
                 if file1 and os.path.exists(file1):
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.image(Image.open(file1), caption="Frente", use_column_width=True)
+                        st.image(Image.open(file1), caption="Frente", use_container_width=True)
                     with col2:
                         img_bbox = desenhar_bounding_boxes(file1, meta_data_f)
-                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_column_width=True)
+                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_container_width=True)
 
                 if file2 and os.path.exists(file2):
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.image(Image.open(file2), caption="Verso", use_column_width=True)
+                        st.image(Image.open(file2), caption="Verso", use_container_width=True)
                     with col2:
                         img_bbox = desenhar_bounding_boxes(file2, meta_data_v)
-                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_column_width=True)
+                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_container_width=True)
 
                 # Mostrar os dados extraídos
                 if isinstance(data, dict):
@@ -171,7 +171,7 @@ def main():
         imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
 
         for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_column_width=True)
+            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
 
         # Salvar PDF temporariamente para uso posterior
         temp_pdf_path = "temp_upload.pdf"
@@ -220,7 +220,7 @@ def main():
         imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
 
         for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_column_width=True)
+            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
 
         # Salvar PDF temporariamente para uso posterior
         temp_pdf_path = "temp_upload.pdf"
