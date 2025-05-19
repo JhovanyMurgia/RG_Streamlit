@@ -67,13 +67,7 @@ def detect_rg(caminho_pdf):
 ########### Dividir RG ####################
 
 def dividir_rg(imagens): 
-
-    caminho_pasta = os.path.join(os.getcwd(), "recortes")
-
-    # Verifica se a pasta existe, se não, cria
-    if not os.path.exists(caminho_pasta):
-        os.makedirs(caminho_pasta)
-
+    
     if len(imagens) == 0:
         print("[ERRO] Nenhuma imagem válida encontrada na pasta.")
     elif len(imagens) == 1:
