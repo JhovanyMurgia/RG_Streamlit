@@ -82,7 +82,7 @@ def main():
 
     # Carregar modelo para ler pdf
     model_yolo = carregar_modelo_yolo()
-    model_cadunico = carregar_modelo_ocr_cadunico()
+    #model_cadunico = carregar_modelo_ocr_cadunico()
     model_classifier = carregar_modelo_classifier()
     model = carregar_modelo_sem_classificador()
     
@@ -178,101 +178,7 @@ def main():
                     os.remove(f)
 
 
-    ####################################
-    #############CADUNICO##############
-    
-    st.subheader("Cadúnico")
-    st.write("Envie um PDF de CADUNICO para processar e visualizar os resultados.")
-
-    uploaded_file = st.file_uploader("Escolha um arquivo PDF", type=["pdf"], key="cadunico")
-
-    if uploaded_file is not None:
-        # Limpar imagens anteriores
-        for f in os.listdir('.'):
-            if f.startswith("imagem_pdf_") and f.endswith(".png"):
-                os.remove(f)
-
-        # Converter PDF em imagens e exibir
-        st.subheader("Visualização do PDF enviado:")
-        imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
-
-        for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
-
-        # Salvar PDF temporariamente para uso posterior
-        temp_pdf_path = "temp_upload.pdf"
-        with open(temp_pdf_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-
-        # Botão para processar
-        if st.button("Executar Modelos", key="btn-cadunico"):
-            with st.spinner("Executando modelo..."):
-
-                
-                data = process_document(model_cadunico, temp_pdf_path, show_image=False)
-
-                # Mostrar os dados extraídos
-                if isinstance(data, dict):
-                    df = pd.DataFrame(list(data.items()), columns=["Campos no documento", "Resultado identificado"])
-                    df = df.explode("Resultado identificado", ignore_index=True)
-                    st.table(df)
-
-                else:
-                    st.warning("Nenhum dado identificado no documento.")
-
-            st.success("Processamento concluído!")
-            # Limpar imagens anteriores
-            for f in os.listdir('.'):
-                if f.endswith(".png"):
-                    os.remove(f)
-
-
-    ####################################################
-    #############Comprovante de residencia##############
-    
-    st.subheader("Comprovante de Residência")
-    st.write("Envie um PDF de Comprovante de Residência para processar e visualizar os resultados.")
-
-    uploaded_file = st.file_uploader("Escolha um arquivo PDF", type=["pdf"], key="residencia")
-
-    if uploaded_file is not None:
-        # Limpar imagens anteriores
-        for f in os.listdir('.'):
-            if f.startswith("imagem_pdf_") and f.endswith(".png"):
-                os.remove(f)
-    
-     # Converter PDF em imagens e exibir
-        st.subheader("Visualização do PDF enviado:")
-        imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
-
-        for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
-
-        # Salvar PDF temporariamente para uso posterior
-        temp_pdf_path = "temp_upload.pdf"
-        with open(temp_pdf_path, "wb") as f:
-            f.write(uploaded_file.getbuffer())
-
-        # Botão para processar
-        if st.button("Executar Modelos", key="btn-comp_res"):
-            with st.spinner("Executando modelo..."):
-
-                
-                data = processar_pdf(temp_pdf_path, model_cadunico)
-
-                # Mostrar os dados extraídos
-                if isinstance(data, dict):
-                    df = pd.DataFrame(list(data.items()), columns=["Campos no documento", "Resultado identificado"])
-                    st.table(df)
-                else:
-                    st.warning("Nenhum dado identificado no documento.")
-
-            st.success("Processamento concluído!")
-            # Limpar imagens anteriores
-            for f in os.listdir('.'):
-                if f.endswith(".png"):
-                    os.remove(f)
-
+   
 
 if __name__ == "__main__":
     main()
