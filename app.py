@@ -4,12 +4,32 @@ import pandas as pd
 import numpy as np
 import cv2
 from PIL import Image
-import fitz  # PyMuPDF
-import torch
+import fitz 
+from ultralytics import YOLO
 
-from identificar_fv import dividir_rg, detect_rg, etapa_final
-from modelo_cadunico import load_ocr_model, process_document
+
+from identificar_fv import dividir_rg, detect_rg, etapa_final, carregar_yolo
+from modelo_cadunico import load_ocr_model_cadunico, process_document
 from modelo_comp_resid import processar_pdf
+from config_run_model import load_ocr_model
+
+
+# Carregar modelos
+@st.cache_resource
+def carregar_modelo_yolo():
+    return YOLO("./weights/best.pt")
+
+@st.cache_resource
+def carregar_modelo_ocr_cadunico():
+    return load_ocr_model_cadunico()
+
+@st.cache_resource
+def carregar_modelo_classifier():
+    return load_ocr_model(classifier=True)
+
+@st.cache_resource
+def carregar_modelo_sem_classificador():
+    return load_ocr_model(classifier=False)
 
 
 def desenhar_bounding_boxes(uploaded_file, result):
@@ -59,12 +79,17 @@ def converter_pdf_para_imagens_fitz(pdf_bytes, output_prefix="imagem_pdf_"):
 
 
 def main():
+
     # Carregar modelo para ler pdf
-    model_cadunico = load_ocr_model()
+    model_yolo = carregar_modelo_yolo()
+    model_cadunico = carregar_modelo_ocr_cadunico()
+    model_classifier = carregar_modelo_classifier()
+    model = carregar_modelo_sem_classificador()
+    
 
     # Carregar e exibir a imagem como cabeçalho
     header_image = Image.open("./img/header_sedu.jpeg")
-    st.image(header_image, use_container_width=True)
+    st.image(header_image, use_column_width=True)
 
 
     st.write("Demonstração dos modelos para o Projeto 11 SEDU")
@@ -88,7 +113,7 @@ def main():
         imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
 
         for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
+            st.image(Image.open(caminho_img), caption=caminho_img, use_column_width=True)
 
         # Salvar PDF temporariamente para uso posterior
         temp_pdf_path = "temp_upload.pdf"
@@ -100,7 +125,7 @@ def main():
             with st.spinner("Executando modelo..."):
 
                 # Detecta RG
-                imagens = detect_rg(temp_pdf_path)
+                imagens = detect_rg(temp_pdf_path, model_yolo)
 
                 # Limpa recortes antigos
                 pasta_recortes = "./recortes"
@@ -115,7 +140,7 @@ def main():
                 file1 = "./recortes/img_1.png"
                 file2 = "./recortes/img_2.png"
 
-                data, meta_data_f, meta_data_v = etapa_final(file1, file2)
+                data, meta_data_f, meta_data_v = etapa_final(file1, file2, model_classifier, model)
 
                 # RG frente e verso
                 file1 = "img_frente.png"
@@ -125,18 +150,18 @@ def main():
                 if file1 and os.path.exists(file1):
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.image(Image.open(file1), caption="Frente", use_container_width=True)
+                        st.image(Image.open(file1), caption="Frente", use_column_width=True)
                     with col2:
                         img_bbox = desenhar_bounding_boxes(file1, meta_data_f)
-                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_container_width=True)
+                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_column_width=True)
 
                 if file2 and os.path.exists(file2):
                     col1, col2 = st.columns(2)
                     with col1:
-                        st.image(Image.open(file2), caption="Verso", use_container_width=True)
+                        st.image(Image.open(file2), caption="Verso", use_column_width=True)
                     with col2:
                         img_bbox = desenhar_bounding_boxes(file2, meta_data_v)
-                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_container_width=True)
+                        st.image(img_bbox, caption="Imagem com campos reconhecidos pela IA", use_column_width=True)
 
                 # Mostrar os dados extraídos
                 if isinstance(data, dict):
@@ -172,7 +197,7 @@ def main():
         imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
 
         for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
+            st.image(Image.open(caminho_img), caption=caminho_img, use_column_width=True)
 
         # Salvar PDF temporariamente para uso posterior
         temp_pdf_path = "temp_upload.pdf"
@@ -221,7 +246,7 @@ def main():
         imagens_convertidas = converter_pdf_para_imagens_fitz(uploaded_file.getvalue())
 
         for caminho_img in imagens_convertidas:
-            st.image(Image.open(caminho_img), caption=caminho_img, use_container_width=True)
+            st.image(Image.open(caminho_img), caption=caminho_img, use_column_width=True)
 
         # Salvar PDF temporariamente para uso posterior
         temp_pdf_path = "temp_upload.pdf"
