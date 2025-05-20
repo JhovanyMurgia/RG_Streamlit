@@ -4,25 +4,27 @@ import re
 import os
 import numpy as np
 import cv2
-import fitz  # PyMuPDF
+import fitz
 from ultralytics import YOLO
 
-from config_run_model import load_ocr_model, run_ocr
+from config_run_model import run_ocr
 
 from extract_rg_1 import extract_rg_t1
 from extract_rg_2 import extract_rg_t2
 from extract_rg_3 import extract_rg_t3
 
+def carregar_yolo():
+    model_path = "./weights/best.pt"
+    model = YOLO(model_path)
+    return model
 
 
 ############################################
 ######### Recortar imagens #################
 
 
-def detect_rg(caminho_pdf):
-    # Carrega o modelo YOLO
-    model_path = "./weights/best.pt"
-    model = YOLO(model_path)
+def detect_rg(caminho_pdf, model):
+    
 
     # Lista para armazenar imagens recortadas
     recortes = []
@@ -66,8 +68,8 @@ def detect_rg(caminho_pdf):
 ###########################################
 ########### Dividir RG ####################
 
-def dividir_rg(imagens): 
-    
+def dividir_rg(imagens):  
+
     if len(imagens) == 0:
         print("[ERRO] Nenhuma imagem válida encontrada na pasta.")
     elif len(imagens) == 1:
@@ -130,6 +132,7 @@ def dividir_rg(imagens):
         cv2.imwrite(nome_arquivo2, esquerda) 
 
 
+
 def encontrar_palavra_mais_proxima(alvo, texto):
     palavras = texto.split()
     melhor_palavra = None
@@ -147,7 +150,7 @@ def encontrar_palavra_mais_proxima(alvo, texto):
     return melhor_palavra, similaridade_percentual
 
 
-def etapa_final(arq1, arq2):
+def etapa_final(arq1, arq2, model_classifier, model):
     img1 = cv2.imread(arq1)
     img2 = cv2.imread(arq2)
 
@@ -164,9 +167,6 @@ def etapa_final(arq1, arq2):
         # Rotaciona 90 graus para a direita
         img2 = cv2.rotate(img2, cv2.ROTATE_90_CLOCKWISE)
         cv2.imwrite(arq2, img2)
-
-    model_classifier = load_ocr_model(classifier=True)
-    model = load_ocr_model(classifier=False)
 
     result1 = run_ocr(model_classifier, arq1, show_image=False)
     media_confidencia1 = 0
