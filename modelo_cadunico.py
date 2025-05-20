@@ -4,7 +4,7 @@ from doctr.models import ocr_predictor
 from doctr.io import DocumentFile
 
 
-def load_ocr_model():
+def load_ocr_model_cadunico():
     """
     Carrega o modelo OCR DocTR.
     """
