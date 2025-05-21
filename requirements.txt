@@ -1,0 +1,10 @@
+python-doctr[torch]
+ultralytics>=8.0.0
+PyMuPDF
+opencv-python
+numpy
+pandas
+matplotlib
+streamlit
+Pillow
+rapidfuzz

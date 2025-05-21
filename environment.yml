@@ -1,0 +1,18 @@
+name: ocr_yolo_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - numpy
+  - pandas
+  - matplotlib
+  - opencv
+  - streamlit
+  - pillow
+  - pip:
+      - python-doctr[torch]     # OCR com PyTorch incluso
+      - PyMuPDF                 # fitz para leitura de PDF
+      - ultralytics>=8.0.0      # YOLOv8 (para seu modelo .pt)
+      - rapidfuzz               # Levenshtein distance
