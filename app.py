@@ -2,8 +2,9 @@ import os
 import streamlit as st
 import pandas as pd
 import numpy as np
-import cv2
-from PIL import Image
+
+from PIL import Image, ImageDraw, ImageFont
+
 import fitz 
 from ultralytics import YOLO
 
@@ -33,10 +34,14 @@ def carregar_modelo_sem_classificador():
 
 
 def desenhar_bounding_boxes(uploaded_file, result):
-    image = Image.open(uploaded_file)
-    image_np = np.array(image)
-    annotated_image = image_np.copy()
-    h, w, _ = image_np.shape
+    image = Image.open(uploaded_file).convert("RGB")
+    draw = ImageDraw.Draw(image)
+    w, h = image.size
+
+    try:
+        font = ImageFont.truetype("arial.ttf", size=14)
+    except IOError:
+        font = ImageFont.load_default()
 
     for page in result.pages:
         for block in page.blocks:
@@ -52,12 +57,11 @@ def desenhar_bounding_boxes(uploaded_file, result):
                     confidence = word.confidence
                     confidence_text = f"{confidence * 100:.0f}"
 
-                    cv2.rectangle(annotated_image, (x_min, y_min), (x_max, y_max), (255, 0, 0), 2)
-                    cv2.putText(annotated_image, confidence_text, (x_min, y_min - 2),
-                                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 0, 0), 2)
+                    draw.rectangle([(x_min, y_min), (x_max, y_max)], outline="blue", width=2)
+                    draw.text((x_min, y_min - 10), confidence_text, fill="blue", font=font)
 
-    annotated_image = cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB)
-    return annotated_image
+    return image
+
 
 
 def converter_pdf_para_imagens_fitz(pdf_bytes, output_prefix="imagem_pdf_"):
