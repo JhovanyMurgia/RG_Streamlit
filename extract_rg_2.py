@@ -3,7 +3,7 @@ import cv2
 import os
 from rapidfuzz.distance import Levenshtein
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 from auxiliary_functions import calculate_base_angle, average_angles_boxes, rotate_image, group_words_by_lines
 from config_run_model import run_ocr
@@ -238,7 +238,7 @@ def extract_name_filiation(ocr_output):
 # Funcoes para fazer OCR de RGs com baixa qualidade
 
 
-def extrair_texto_preto_sem_verde_melhorado(imagem_path, salvar_como=None, mostrar_etapas=False):
+def extrair_texto_preto_sem_verde_melhorado(imagem_path, salvar_como=None):
     imagem = cv2.imread(imagem_path)
 
     if imagem is None:
@@ -289,21 +289,6 @@ def extrair_texto_preto_sem_verde_melhorado(imagem_path, salvar_como=None, mostr
     if salvar_como:
         cv2.imwrite(salvar_como, final)
 
-    # Mostrar etapas
-    if mostrar_etapas:
-        fig, axs = plt.subplots(1, 4, figsize=(20, 5))
-        axs[0].imshow(cv2.cvtColor(imagem, cv2.COLOR_BGR2RGB))
-        axs[0].set_title("Original")
-        axs[1].imshow(cv2.cvtColor(imagem_contraste, cv2.COLOR_BGR2RGB))
-        axs[1].set_title("Contraste + Sem Verde + Resolução")
-        axs[2].imshow(binaria, cmap='gray')
-        axs[2].set_title("Binarizada")
-        axs[3].imshow(final, cmap='gray')
-        axs[3].set_title("Final")
-        for ax in axs:
-            ax.axis('off')
-        plt.tight_layout()
-        plt.show()
 
     return final
 
